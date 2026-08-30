@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CCNP 从小白到专家 · 学习路线图</title>
+<style>
+:root{
+  --bg:#0b0f17;
+  --bg2:#0f1523;
+  --panel:#131a2a;
+  --panel2:#182135;
+  --line:#22304a;
+  --line2:#2c3d5c;
+  --txt:#e6edf7;
+  --txt2:#9fb0ca;
+  --txt3:#6b7c99;
+  --accent:#4da3ff;
+  --accent2:#00d4a0;
+  --warn:#ffb547;
+  --danger:#ff6b6b;
+  --purple:#a78bfa;
+  --pink:#f472b6;
+  --shadow:0 8px 32px rgba(0,0,0,.45);
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--txt)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  font-size:14px;line-height:1.65;
+  background:
+    radial-gradient(1200px 600px at 12% -8%, rgba(77,163,255,.10), transparent 60%),
+    radial-gradient(1000px 500px at 88% 4%, rgba(0,212,160,.08), transparent 60%),
+    var(--bg);
+  min-height:100vh;
+  padding:0 0 80px;
+}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+/* ── header ── */
+header{
+  padding:44px 0 28px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:28px;
+}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.brand h1{
+  font-size:30px;font-weight:700;letter-spacing:.4px;
+  background:linear-gradient(92deg,#e6edf7 0%,#4da3ff 55%,#00d4a0 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.brand .sub{color:var(--txt2);margin-top:8px;font-size:14px}
+.brand .tags{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.tag{
+  font-size:11.5px;padding:4px 11px;border-radius:999px;
+  border:1px solid var(--line2);color:var(--txt2);background:rgba(255,255,255,.02);
+}
+.tag.on{border-color:rgba(77,163,255,.5);color:#9ecbff;background:rgba(77,163,255,.09)}
+.tag.on2{border-color:rgba(0,212,160,.45);color:#68e6c4;background:rgba(0,212,160,.08)}
+
+/* progress ring */
+.ring-box{display:flex;align-items:center;gap:18px}
+.ring{position:relative;width:104px;height:104px;flex:0 0 auto}
+.ring svg{transform:rotate(-90deg)}
+.ring .val{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.ring .val b{font-size:23px;font-weight:700;letter-spacing:-.5px}
+.ring .val span{font-size:10.5px;color:var(--txt3);margin-top:1px}
+.ring-meta{font-size:12.5px;color:var(--txt2);line-height:1.9}
+.ring-meta b{color:var(--txt);font-weight:600}
+
+/* ── stats ── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px;margin-bottom:26px}
+.stat{
+  background:linear-gradient(160deg,var(--panel) 0%,var(--bg2) 100%);
+  border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;
+  position:relative;overflow:hidden;
+}
+.stat::after{content:"";position:absolute;left:0;top:0;width:3px;height:100%;background:var(--accent);opacity:.75}
+.stat.c2::after{background:var(--accent2)}
+.stat.c3::after{background:var(--warn)}
+.stat.c4::after{background:var(--purple)}
+.stat.c5::after{background:var(--pink)}
+.stat .n{font-size:26px;font-weight:700;letter-spacing:-.6px}
+.stat .l{font-size:12px;color:var(--txt3);margin-top:3px}
+
+/* ── toolbar ── */
+.toolbar{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  margin-bottom:22px;padding:14px 16px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+}
+.search{
+  flex:1 1 240px;min-width:200px;
+  background:var(--bg);border:1px solid var(--line2);border-radius:9px;
+  padding:9px 13px;color:var(--txt);font-size:13.5px;font-family:inherit;outline:none;
+}
+.search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(77,163,255,.13)}
+.search::placeholder{color:var(--txt3)}
+.btn{
+  background:var(--panel2);border:1px solid var(--line2);color:var(--txt2);
+  padding:8px 14px;border-radius:9px;font-size:12.5px;cursor:pointer;
+  font-family:inherit;transition:.15s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--accent);color:var(--txt);background:rgba(77,163,255,.10)}
+.btn.danger:hover{border-color:var(--danger);color:#ffb3b3;background:rgba(255,107,107,.10)}
+.btn.pri{background:rgba(77,163,255,.14);border-color:rgba(77,163,255,.45);color:#9ecbff}
+
+/* ── stage ── */
+.stage{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow);
+}
+.stage-hd{
+  display:flex;align-items:center;gap:16px;padding:17px 20px;cursor:pointer;
+  transition:.15s;user-select:none;
+}
+.stage-hd:hover{background:var(--panel2)}
+.badge{
+  flex:0 0 auto;width:46px;height:46px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:16px;letter-spacing:-.5px;
+  border:1px solid;
+}
+.stage-info{flex:1;min-width:0}
+.stage-info h3{font-size:16px;font-weight:650;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.stage-info .desc{font-size:12.5px;color:var(--txt3);margin-top:4px}
+.pill{font-size:10.5px;padding:2px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--txt3);font-weight:500}
+.pill.req{border-color:rgba(255,181,71,.45);color:var(--warn);background:rgba(255,181,71,.08)}
+.pill.opt{border-color:rgba(167,139,250,.45);color:var(--purple);background:rgba(167,139,250,.08)}
+.stage-right{display:flex;align-items:center;gap:16px;flex:0 0 auto}
+.mini{width:118px}
+.mini .bar{height:6px;background:var(--bg);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.mini .fill{height:100%;border-radius:99px;transition:width .35s ease}
+.mini .txt{font-size:11px;color:var(--txt3);margin-top:5px;text-align:right;font-variant-numeric:tabular-nums}
+.chev{color:var(--txt3);font-size:12px;transition:transform .25s;width:14px;text-align:center}
+.stage.open .chev{transform:rotate(90deg)}
+
+.stage-body{display:none;border-top:1px solid var(--line);background:var(--bg2)}
+.stage.open .stage-body{display:block}
+.ch{
+  display:flex;align-items:flex-start;gap:13px;padding:11px 20px;
+  border-bottom:1px solid rgba(34,48,74,.55);transition:.12s;
+}
+.ch:last-child{border-bottom:none}
+.ch:hover{background:rgba(77,163,255,.05)}
+.ch.hide{display:none}
+.cb{
+  flex:0 0 auto;width:17px;height:17px;margin-top:3px;border-radius:5px;
+  border:1.5px solid var(--line2);background:var(--bg);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.cb:hover{border-color:var(--accent)}
+.cb.done{background:var(--accent2);border-color:var(--accent2)}
+.cb.done::after{content:"✓";color:#04231b;font-size:11.5px;font-weight:800;line-height:1}
+.ch-main{flex:1;min-width:0}
+.ch-t{font-size:13.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ch.done .ch-t .name{color:var(--txt3);text-decoration:line-through}
+.ch-t .name:hover{color:var(--accent)}
+.ch-n{font-size:11px;color:var(--txt3);font-variant-numeric:tabular-nums;flex:0 0 auto;min-width:22px}
+.ch-note{font-size:11.5px;color:var(--txt3);margin-top:3px}
+.star{color:var(--warn);font-size:11px;font-weight:700}
+.open-ext{font-size:11px;color:var(--txt3);flex:0 0 auto;opacity:0;transition:.15s}
+.ch:hover .open-ext{opacity:1}
+
+/* ── path ── */
+.section-t{
+  font-size:13px;font-weight:600;color:var(--txt2);letter-spacing:1.4px;
+  text-transform:uppercase;margin:36px 0 14px;display:flex;align-items:center;gap:12px;
+}
+.section-t::after{content:"";flex:1;height:1px;background:var(--line)}
+.ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.lv{
+  background:linear-gradient(165deg,var(--panel),var(--bg2));
+  border:1px solid var(--line);border-radius:var(--r);padding:17px 18px;
+  position:relative;
+}
+.lv .lvl{font-size:11px;font-weight:700;letter-spacing:1.5px;margin-bottom:7px}
+.lv h4{font-size:14.5px;font-weight:650;margin-bottom:8px}
+.lv p{font-size:12px;color:var(--txt3);line-height:1.75}
+.lv .wk{margin-top:11px;font-size:11px;color:var(--txt2);border-top:1px solid var(--line);padding-top:9px}
+
+/* ── notes ── */
+.notes{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:20px 22px;margin-top:16px;
+}
+.notes ul{list-style:none}
+.notes li{
+  font-size:13px;color:var(--txt2);padding:7px 0 7px 20px;position:relative;line-height:1.75;
+}
+.notes li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:12px}
+.notes li b{color:var(--txt);font-weight:600}
+.notes li em{color:var(--warn);font-style:normal}
+
+footer{
+  margin-top:44px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--txt3);display:flex;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+}
+.toast{
+  position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(70px);
+  background:var(--panel2);border:1px solid var(--line2);color:var(--txt);
+  padding:11px 20px;border-radius:10px;font-size:13px;box-shadow:var(--shadow);
+  opacity:0;transition:.28s;pointer-events:none;z-index:99;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:720px){
+  .wrap{padding:0 16px}
+  .brand h1{font-size:23px}
+  .stage-right .mini{width:74px}
+  .stage-info .desc{display:none}
+  header{padding:28px 0 20px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="hdr-top">
+    <div class="brand">
+      <h1>CCNP 从小白到专家</h1>
+      <div class="sub">系统化学习路线图 · Enterprise 主线（ENCOR 350-401 + ENARSI 300-410）+ Security 选修</div>
+      <div class="tags">
+        <span class="tag on">9 个阶段</span>
+        <span class="tag on">72 篇文档</span>
+        <span class="tag on2">10 个实验</span>
+        <span class="tag on2">三厂商命令对照</span>
+        <span class="tag">Cisco / H3C / 华为</span>
+        <span class="tag">无题库 · 纯原理</span>
+      </div>
+    </div>
+    <div class="ring-box">
+      <div class="ring">
+        <svg width="104" height="104">
+          <circle cx="52" cy="52" r="45" fill="none" stroke="#1b2740" stroke-width="9"/>
+          <circle id="ringFill" cx="52" cy="52" r="45" fill="none" stroke="url(#g1)"
+                  stroke-width="9" stroke-linecap="round"
+                  stroke-dasharray="282.7" stroke-dashoffset="282.7"
+                  style="transition:stroke-dashoffset .5s ease"/>
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#4da3ff"/>
+              <stop offset="100%" stop-color="#00d4a0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="val"><b id="pctTxt">0%</b><span>总进度</span></div>
+      </div>
+      <div class="ring-meta">
+        已完成 <b id="doneTxt">0</b> / <b id="totalTxt">0</b> 篇<br>
+        当前阶段 <b id="curStage">Stage 0</b><br>
+        <span style="color:var(--txt3)">进度保存在本机浏览器</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stats" id="stats"></div>
+
+<div class="toolbar">
+  <input class="search" id="q" placeholder="搜索章节…  例：BGP / 重分发 / MTU / 802.1X">
+  <button class="btn pri" id="btnNext">跳到下一篇未读</button>
+  <button class="btn" id="btnAll">全部展开</button>
+  <button class="btn" id="btnNone">全部收起</button>
+  <button class="btn" id="btnExport">导出进度</button>
+  <button class="btn danger" id="btnReset">重置进度</button>
+</div>
+
+<div id="stages"></div>
+
+<div class="section-t">能力阶梯</div>
+<div class="ladder" id="ladder"></div>
+
+<div class="section-t">怎么用这份资料</div>
+<div class="notes">
+  <ul>
+    <li><b>不要跳过 Stage 0 的第 3 章（IP 编址与子网划分）。</b>后面所有内容——OSPF 的 wildcard、BGP 的前缀过滤、ACL、汇总——全部建立在它上面。<em>这一章不熟，后面每一章都会卡。</em></li>
+    <li><b>每章按 6 段读：</b>① 解决什么问题 → ② 原理 → ③ 配置命令 → ④ 实验 → ⑤ 排障 → ⑥ 自测题。<em>自测题不看答案先自己讲一遍</em>，讲不出来就回去重读原理。</li>
+    <li><b>实验的价值在第 ④ 步「故障注入」。</b>照着配一遍只能记住命令；<em>自己把它弄坏再修好，才会形成排障直觉。</em></li>
+    <li><b>实验环境用 EVE-NG 或 CML。</b><em>不要用 Packet Tracer 学 CCNP</em>——它不支持 MPLS/VXLAN/LISP，很多特性行为也和真机不一致。</li>
+    <li><b>已经在做网络运维的人</b>可以跳过 Stage 0/1 的大部分，但<em>务必先做 Stage 6 的考纲自测</em>，把真正的知识缺口找出来再补。</li>
+    <li><b>国内上班用 H3C / 华为、考试考 Cisco？</b>每章配置段都有三厂商对照，Stage 7 附录 03 是完整的对照表——<em>这是这份资料和市面教材最大的区别。</em></li>
+    <li><b>本资料不含任何考试真题（题库 / dump）。</b>所有自测题为原创或基于公开技术文档编写。<em>背题库违反考试协议，被查到会取消全部认证。</em></li>
+  </ul>
+</div>
+
+<footer>
+  <div>CCNP from Zero to Expert · 文档 CC BY-SA 4.0 / 代码 MIT</div>
+  <div>Cisco / H3C / 华为为各自公司商标，本资料与其无隶属关系</div>
+</footer>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const D = "docs/";
+const STAGES = [
+  { id:"s0", n:"0", name:"基础篇", color:"#4da3ff",
+    desc:"零基础起步：把网络是怎么跑起来的这件事讲清楚", tagText:"必修", tagCls:"req",
+    dir:"00-基础篇/",
+    items:[
+      ["README.md","阶段导读",""],
+      ["01-网络分层与数据封装.md","网络分层与数据封装","OSI / TCP-IP、封装解封装"],
+      ["02-以太网与交换机工作原理.md","以太网与交换机工作原理","MAC 表、冲突域 / 广播域"],
+      ["03-IP编址与子网划分.md","IP 编址与子网划分","★ 全书最重要的一章：block size 秒算、VLSM、汇总、wildcard"],
+      ["04-静态路由与默认网关.md","静态路由与默认网关","AD 值、浮动静态 + IP SLA"],
+      ["05-TCP-UDP与常见应用协议.md","TCP / UDP 与常见应用协议","端口表、MSS / MTU、PMTUD 黑洞"],
+      ["06-Cisco-IOS操作入门.md","Cisco IOS 操作入门","running / startup、reload in、密码恢复"]
+    ]},
+  { id:"s1", n:"1", name:"CCNA 补齐篇", color:"#38bdf8",
+    desc:"补齐 CCNP 假设你已经会的那些东西", tagText:"必修", tagCls:"req",
+    dir:"01-CCNA补齐篇/",
+    items:[
+      ["README.md","阶段导读",""],
+      ["01-VLAN与Trunk.md","VLAN 与 Trunk","802.1Q、Native VLAN / PVID"],
+      ["02-STP生成树协议.md","STP 生成树协议","★ 三步选举推导：根桥 → 根口 → 指定口"],
+      ["03-EtherChannel链路聚合.md","EtherChannel 链路聚合","LACP / PAgP、负载分担哈希"],
+      ["04-OSPF单区域.md","OSPF 单区域","★ 7 状态机 + 建邻 5 条件"],
+      ["05-ACL访问控制列表.md","ACL 访问控制列表","wildcard、隐含 deny、放置位置"],
+      ["06-NAT地址转换.md","NAT 地址转换","inside / outside 标记、PAT、ALG"],
+      ["07-DHCP-DNS-NTP基础服务.md","DHCP / DNS / NTP 基础服务","DORA、helper-address、giaddr"],
+      ["08-无线与安全基础.md","无线与安全基础","射频基础、WPA2/3、端口安全"]
+    ]},
+  { id:"s2", n:"2", name:"ENCOR 350-401", color:"#00d4a0",
+    desc:"CCNP 核心考试：架构 → 虚拟化 → 交换 → 路由 → 服务 → 安全 → 自动化", tagText:"核心", tagCls:"req",
+    dir:"02-ENCOR-350-401/",
+    items:[
+      ["README.md","阶段导读 + 考纲权重",""],
+      ["01-企业网络架构与设计.md","企业网络架构与设计","三层 / 二层架构、Spine-Leaf、Fabric"],
+      ["02-网络虚拟化-VRF-GRE-IPsec.md","网络虚拟化：VRF / GRE / IPsec","递归路由、隧道 MTU"],
+      ["03-Overlay-VXLAN与LISP.md","Overlay：VXLAN 与 LISP","VNI / VTEP / UDP4789、EID-RLOC"],
+      ["04-交换进阶-STP进阶与排障.md","交换进阶：STP 进阶与排障","MST region、Root/Loop Guard、UDLD"],
+      ["05-一层二层排障与高可用-HSRP-VRRP.md","一二层排障与高可用","HSRP / VRRP / GLBP、Track + IP SLA"],
+      ["06-EIGRP.md","EIGRP","★ DUAL：FD / RD / Successor / FS"],
+      ["07-OSPF进阶.md","OSPF 进阶","★ LSA 1-7 全表、Stub / NSSA 家族"],
+      ["08-BGP.md","BGP","★ 11 步选路、RR、属性调优"],
+      ["09-组播Multicast.md","组播 Multicast","IGMP、PIM-SM、RPF 检查"],
+      ["10-QoS服务质量.md","QoS 服务质量","DSCP 值表、LLQ、shaping vs policing"],
+      ["11-无线架构与漫游.md","无线架构与漫游","CAPWAP、Option 43、L2/L3 漫游"],
+      ["12-IP服务-NTP-NAT-SLA-NetFlow-SNMP-Syslog.md","IP 服务全家桶","NTP / NAT / IP SLA / NetFlow / SNMP / Syslog / EEM"],
+      ["13-网络安全-AAA-802.1X-控制平面保护.md","网络安全基础","AAA、802.1X、CoPP、uRPF、DAI/IPSG"],
+      ["14-网络自动化-Python-REST-NETCONF-Ansible.md","网络自动化","JSON/YANG、NETCONF vs RESTCONF、Netmiko、Ansible"],
+      ["15-SD-Access与SD-WAN.md","SD-Access 与 SD-WAN","LISP+VXLAN+SGT、vManage/vSmart/vBond、OMP"]
+    ]},
+  { id:"s3", n:"3", name:"ENARSI 300-410", color:"#22c55e",
+    desc:"高级路由与排障：这里是拉开差距的地方", tagText:"核心", tagCls:"req",
+    dir:"03-ENARSI-300-410/",
+    items:[
+      ["README.md","阶段导读",""],
+      ["01-EIGRP深入与排障.md","EIGRP 深入与排障","SIA、Query 边界、Stub、variance"],
+      ["02-OSPF深入与排障.md","OSPF 深入与排障","虚链路、area range vs summary-address、filter-list"],
+      ["03-BGP深入与排障.md","BGP 深入与排障","next-hop-self、RIB-failure、soft reset"],
+      ["04-路由重分发与路由策略.md","★ 路由重分发与路由策略","全书最难：双点双向环路 + Route Tag 三板斧、PBR"],
+      ["05-MPLS与L3VPN.md","MPLS 与 L3VPN","RD vs RT、PHP、trace mpls ip"],
+      ["06-DMVPN.md","DMVPN","mGRE + NHRP、Phase 1/2/3、redirect/shortcut"],
+      ["07-基础设施安全与服务排障.md","基础设施安全与服务排障","uRPF、CoPP、DHCP/NAT/NTP 排障"]
+    ]},
+  { id:"s4", n:"4", name:"实验手册", color:"#ffb547",
+    desc:"10 个动手实验，每个都带故障注入", tagText:"必做", tagCls:"req",
+    dir:"04-实验手册/",
+    items:[
+      ["README.md","实验方法论 · ★ 第 4 步故障注入才是重点",""],
+      ["00-实验环境搭建.md","实验环境搭建","EVE-NG 安装、IOL 镜像、fixpermissions"],
+      ["lab-01-VLAN与Trunk.md","Lab 01 · VLAN 与 Trunk",""],
+      ["lab-02-STP与EtherChannel.md","Lab 02 · STP 与 EtherChannel",""],
+      ["lab-03-HSRP高可用.md","Lab 03 · HSRP 高可用",""],
+      ["lab-04-OSPF多区域.md","Lab 04 · OSPF 多区域",""],
+      ["lab-05-EIGRP.md","Lab 05 · EIGRP",""],
+      ["lab-06-BGP.md","Lab 06 · BGP",""],
+      ["lab-07-重分发与路由策略.md","★ Lab 07 · 重分发与路由策略","全书最重要的实验：亲手做出环路，再用三种方法修好"],
+      ["lab-08-GRE-over-IPsec.md","Lab 08 · GRE over IPsec",""],
+      ["lab-09-DMVPN.md","Lab 09 · DMVPN",""],
+      ["lab-10-综合排障.md","★ Lab 10 · 综合排障","毕业实验：11 个故障场景 + 计时评分"]
+    ]},
+  { id:"s5", n:"5", name:"排障方法论", color:"#f472b6",
+    desc:"从「会查」到「会推」再到「会防」", tagText:"必修", tagCls:"req",
+    dir:"05-排障方法论/",
+    items:[
+      ["README.md","阶段导读 · L1 会查 / L2 会推 / L3 会防",""],
+      ["01-结构化排障流程.md","结构化排障流程","7 步法、二分法、对比法、应急优先级"],
+      ["02-分层定位法.md","分层定位法","每层命令集、症状→层→命令 速查表"],
+      ["03-抓包与端口镜像.md","抓包与端口镜像","SPAN / RSPAN / ERSPAN、IOS EPC、Wireshark 过滤"],
+      ["04-真实故障案例集.md","★ 真实故障案例集","12 个完整案例 + 高频根因排行榜"]
+    ]},
+  { id:"s6", n:"6", name:"备考与考试", color:"#a78bfa",
+    desc:"考纲对照、学习计划、易错点", tagText:"备考", tagCls:"opt",
+    dir:"06-备考与考试/",
+    items:[
+      ["README.md","认证路径与考试事实 · ★ Cisco 考试不能回退",""],
+      ["01-考纲对照表.md","考纲对照表","官方 exam topic ↔ 章节映射，三轮自审法"],
+      ["02-16周学习计划.md","16 周学习计划","W0-W24 日级计划 + 压缩版"],
+      ["03-易错点与考试陷阱.md","★ 易错点与考试陷阱","17 类陷阱 + 一页速记卡"]
+    ]},
+  { id:"s7", n:"7", name:"附录", color:"#60a5fa",
+    desc:"速查手册、术语表、三厂商命令对照", tagText:"工具", tagCls:"opt",
+    dir:"07-附录/",
+    items:[
+      ["README.md","附录导读",""],
+      ["01-命令速查手册.md","命令速查手册","按场景组织 + 高频组合 + 巡检清单"],
+      ["02-中英术语对照表.md","中英术语对照表","17 个领域 + 考题措辞表"],
+      ["03-Cisco-H3C-华为命令对照.md","★ Cisco / H3C / 华为命令对照","19 节 + 混合组网最容易踩的 10 个坑"],
+      ["04-资源与书单.md","资源与书单",""]
+    ]},
+  { id:"s8", n:"8", name:"Security 选修", color:"#ff6b6b",
+    desc:"补齐 ENCOR 5.5，也是 SCOR 350-701 的入门", tagText:"选修", tagCls:"opt",
+    dir:"08-Security选修/",
+    items:[
+      ["README.md","模块导读",""],
+      ["01-SCOR概览与安全模型.md","SCOR 概览与安全模型","CIA、纵深防御、二层攻击全表、加固清单"],
+      ["02-ACL与区域防火墙ZBF.md","ACL 与区域防火墙 ZBF","无状态 → 有状态、ZBF 三条铁律、self 区域"],
+      ["03-VPN-IPsec与SSL.md","VPN：IPsec 与 SSL","IKE 两阶段、NAT-T、VTI、encaps/decaps 判障"],
+      ["04-802.1X与NAC.md","802.1X 与 NAC","MAB、host-mode、★ Critical Auth、三阶段部署法"],
+      ["05-零信任与网络分段.md","★ 零信任与网络分段","宏分段 vs 微分段、SGT、低成本微分段方案"]
+    ]}
+];
+
+const LADDER = [
+  {lvl:"L1", c:"#4da3ff", h:"能看懂",  p:"看得懂配置和拓扑，知道每条命令大概在干什么。能按文档照着配。", wk:"Stage 0-1 · 约 4 周"},
+  {lvl:"L2", c:"#00d4a0", h:"能配置",  p:"给定需求能独立设计并配置出来，知道为什么这么配，也知道有哪些替代方案。", wk:"Stage 2-3 · 约 12 周"},
+  {lvl:"L3", c:"#ffb547", h:"能排障",  p:"看到症状能推出可能的原因，用最少的命令定位到根因。不靠猜，靠推。", wk:"Stage 4-5 · 约 6 周"},
+  {lvl:"L4", c:"#a78bfa", h:"能设计",  p:"能在多个约束（成本 / 可用性 / 安全 / 运维复杂度）之间做权衡，给出方案并说清取舍。", wk:"Stage 6-8 · 约 4 周"},
+  {lvl:"L5", c:"#f472b6", h:"能预防",  p:"从故障里提炼出通用模式，改进设计和流程，让同类故障不再发生。", wk:"持续积累"}
+];
+
+/* ── state ── */
+const KEY = "ccnp_roadmap_progress_v1";
+let done = {};
+try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch(e){ done = {}; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(done)); }catch(e){} }
+
+const key = (s,f) => s.id + "|" + f;
+const allItems = () => STAGES.flatMap(s => s.items.map(i => key(s,i[0])));
+
+/* ── render stats ── */
+function renderStats(){
+  const total = allItems().length;
+  const labs = STAGES.find(s=>s.id==="s4").items.length - 2;
+  const secs = STAGES.find(s=>s.id==="s8").items.length - 1;
+  const html = [
+    ["9","学习阶段","",""],
+    [String(total),"篇文档","c2",""],
+    [String(labs),"个动手实验","c3",""],
+    ["24","周完整计划","c4",""],
+    [String(secs),"篇安全选修","c5",""],
+    ["3","厂商命令对照","",""]
+  ].map(([n,l,c]) => `<div class="stat ${c||''}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("");
+  document.getElementById("stats").innerHTML = html;
+}
+
+/* ── render stages ── */
+function renderStages(){
+  document.getElementById("stages").innerHTML = STAGES.map(s => {
+    const rows = s.items.map((it,idx) => {
+      const k = key(s,it[0]);
+      const d = !!done[k];
+      const href = D + s.dir + it[0];
+      const num = it[0]==="README.md" ? "—" : String(idx).padStart(2,"0");
+      const note = it[2] ? `<div class="ch-note">${it[2].replace(/★([^★]*)★?/g,'<span class="star">★$1</span>')}</div>` : "";
+      return `<div class="ch ${d?'done':''}" data-k="${k}" data-s="${s.id}" data-txt="${(it[1]+' '+it[2]).toLowerCase()}">
+        <div class="cb ${d?'done':''}" data-t="${k}"></div>
+        <div class="ch-main">
+          <div class="ch-t">
+            <span class="ch-n">${num}</span>
+            <a class="name" href="${encodeURI(href)}" target="_blank" rel="noopener">${it[1]}</a>
+            <span class="open-ext">↗ 打开</span>
+          </div>${note}
+        </div>
+      </div>`;
+    }).join("");
+    return `<div class="stage" id="${s.id}">
+      <div class="stage-hd" data-toggle="${s.id}">
+        <div class="badge" style="color:${s.color};border-color:${s.color}55;background:${s.color}14">${s.n}</div>
+        <div class="stage-info">
+          <h3>${s.name}<span class="pill ${s.tagCls}">${s.tagText}</span></h3>
+          <div class="desc">${s.desc}</div>
+        </div>
+        <div class="stage-right">
+          <div class="mini">
+            <div class="bar"><div class="fill" id="f-${s.id}" style="width:0%;background:${s.color}"></div></div>
+            <div class="txt" id="t-${s.id}">0 / ${s.items.length}</div>
+          </div>
+          <div class="chev">▶</div>
+        </div>
+      </div>
+      <div class="stage-body">${rows}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderLadder(){
+  document.getElementById("ladder").innerHTML = LADDER.map(l =>
+    `<div class="lv" style="border-top:2px solid ${l.c}">
+       <div class="lvl" style="color:${l.c}">${l.lvl}</div>
+       <h4>${l.h}</h4><p>${l.p}</p><div class="wk">${l.wk}</div>
+     </div>`).join("");
+}
+
+/* ── progress ── */
+function refresh(){
+  let total = 0, d = 0, cur = null;
+  STAGES.forEach(s => {
+    const n = s.items.length;
+    const c = s.items.filter(i => done[key(s,i[0])]).length;
+    total += n; d += c;
+    const f = document.getElementById("f-"+s.id);
+    const t = document.getElementById("t-"+s.id);
+    if(f) f.style.width = (n? Math.round(c/n*100):0) + "%";
+    if(t) t.textContent = c + " / " + n;
+    if(!cur && c < n) cur = s;
+  });
+  const pct = total ? Math.round(d/total*100) : 0;
+  document.getElementById("pctTxt").textContent = pct + "%";
+  document.getElementById("doneTxt").textContent = d;
+  document.getElementById("totalTxt").textContent = total;
+  document.getElementById("curStage").textContent = cur ? ("Stage " + cur.n + " · " + cur.name) : "🎉 全部完成";
+  const C = 2 * Math.PI * 45;
+  document.getElementById("ringFill").style.strokeDashoffset = String(C - C * pct / 100);
+}
+
+/* ── events ── */
+document.addEventListener("click", e => {
+  const cb = e.target.closest(".cb");
+  if(cb){
+    const k = cb.dataset.t;
+    if(done[k]) delete done[k]; else done[k] = 1;
+    cb.classList.toggle("done", !!done[k]);
+    cb.closest(".ch").classList.toggle("done", !!done[k]);
+    save(); refresh();
+    return;
+  }
+  const hd = e.target.closest(".stage-hd");
+  if(hd && !e.target.closest("a")){
+    document.getElementById(hd.dataset.toggle).classList.toggle("open");
+  }
+});
+
+function toast(m){
+  const t = document.getElementById("toast");
+  t.textContent = m; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+document.getElementById("q").addEventListener("input", e => {
+  const v = e.target.value.trim().toLowerCase();
+  document.querySelectorAll(".stage").forEach(st => {
+    let hit = 0;
+    st.querySelectorAll(".ch").forEach(ch => {
+      const m = !v || ch.dataset.txt.includes(v) || ch.textContent.toLowerCase().includes(v);
+      ch.classList.toggle("hide", !m);
+      if(m) hit++;
+    });
+    st.style.display = (v && !hit) ? "none" : "";
+    if(v && hit) st.classList.add("open");
+  });
+  if(!v) document.querySelectorAll(".stage").forEach(s => s.style.display = "");
+});
+
+document.getElementById("btnAll").onclick  = () => document.querySelectorAll(".stage").forEach(s=>s.classList.add("open"));
+document.getElementById("btnNone").onclick = () => document.querySelectorAll(".stage").forEach(s=>s.classList.remove("open"));
+
+document.getElementById("btnNext").onclick = () => {
+  for(const s of STAGES){
+    for(const it of s.items){
+      if(!done[key(s,it[0])]){
+        const el = document.getElementById(s.id);
+        el.classList.add("open");
+        el.scrollIntoView({behavior:"smooth", block:"center"});
+        const row = el.querySelector(`.ch[data-k="${CSS.escape(key(s,it[0]))}"]`);
+        if(row){
+          row.style.transition="background .3s";
+          row.style.background="rgba(77,163,255,.18)";
+          setTimeout(()=>row.style.background="", 1600);
+        }
+        toast("下一篇：" + it[1]);
+        return;
+      }
+    }
+  }
+  toast("🎉 全部章节已完成");
+};
+
+document.getElementById("btnExport").onclick = () => {
+  const lines = ["# CCNP 学习进度  " + new Date().toLocaleString("zh-CN"), ""];
+  STAGES.forEach(s => {
+    const c = s.items.filter(i=>done[key(s,i[0])]).length;
+    lines.push(`## Stage ${s.n} · ${s.name}  (${c}/${s.items.length})`);
+    s.items.forEach(i => lines.push(`- [${done[key(s,i[0])]?"x":" "}] ${i[1]}`));
+    lines.push("");
+  });
+  const txt = lines.join("\n");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(
+      ()=>toast("进度已复制到剪贴板（Markdown）"),
+      ()=>{ console.log(txt); toast("已输出到控制台"); }
+    );
+  } else { console.log(txt); toast("已输出到浏览器控制台"); }
+};
+
+document.getElementById("btnReset").onclick = () => {
+  if(confirm("确定要清空所有学习进度吗？此操作不可撤销。")){
+    done = {}; save();
+    document.querySelectorAll(".cb").forEach(c=>c.classList.remove("done"));
+    document.querySelectorAll(".ch").forEach(c=>c.classList.remove("done"));
+    refresh(); toast("进度已重置");
+  }
+};
+
+renderStats(); renderStages(); renderLadder(); refresh();
+const firstUndone = STAGES.find(s => s.items.some(i => !done[key(s,i[0])]));
+if(firstUndone) document.getElementById(firstUndone.id).classList.add("open");
+</script>
+</body>
+</html>
