@@ -1,0 +1,26 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# 实验环境导出物（体积大，不入库）
+*.unl
+*.zip
+*.qcow2
+*.vmdk
+*.ova
+*.iso
+
+# 抓包文件
+*.pcap
+*.pcapng
+
+# 个人笔记（不公开）
+_private/
+错题本.md
