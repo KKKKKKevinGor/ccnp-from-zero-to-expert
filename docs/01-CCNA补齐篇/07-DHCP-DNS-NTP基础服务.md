@@ -223,6 +223,91 @@ SW1(config-if)# ip verify source port-security   ! 同时校验 MAC
    返回给客户端并缓存
 ```
 
+**★ TTL：缓存能存多久 ★**
+
+上面流程的最后一步是"缓存"，但**能缓存多久**由权威服务器说了算——这个值就是 **DNS TTL**。
+
+> ⚠️ **`TTL` 这个缩写在网络里指两个完全不同的东西，考试和面试都爱在这里设陷阱。**
+> 看到 TTL 先问自己一句：**几跳，还是几秒？**
+
+| | **IP 头 TTL** | **DNS TTL** |
+|:--|:--|:--|
+| 位置 | IP 报文头字段 | DNS 应答记录里的字段 |
+| 单位 | **跳数**（每过一台路由器减 1） | **秒** |
+| 作用 | 防环路、`traceroute` 的原理 | 解析结果的缓存有效期 |
+| 归零后 | 丢包 + 回 ICMP Time Exceeded | 缓存失效，必须重新查询 |
+| 详见 | [基础篇第 1 章](../00-基础篇/01-网络分层与数据封装.md) | 本节 |
+
+DNS 应答的每条记录都自带 TTL：
+
+```bash
+$ dig www.example.com
+
+;; ANSWER SECTION:
+www.example.com.    3600    IN    A    93.184.216.34
+                    ↑
+                    TTL=3600 秒，解析器可以缓存 1 小时
+```
+
+**TTL 长短是一个明确的权衡**：
+
+| | TTL 长（如 86400） | TTL 短（如 1~60） |
+|:--|:--|:--|
+| 上游查询量 | 少，权威服务器压力小 | 大 |
+| 解析速度 | 快（多数命中缓存） | 略慢 |
+| **改地址后的生效速度** | **慢，最长要等满一个 TTL** | **快** |
+| 典型用途 | 稳定的 `NS`、`MX` 记录 | **CDN、故障切换、GSLB** |
+
+**为什么 CDN 的 TTL 只有几秒**：CDN 靠 DNS 做**节点调度**——它要按你的位置、运营商、节点负载和健康状态，每次给出可能不同的一组 IP。**TTL 必须短，调度才有意义。**
+
+**★ 坑：min-TTL 覆盖（缓存下限）★**
+
+很多 DNS 缓存/转发设备——dnsmasq、AdGuard，以及路由器和防火墙上的 DNS proxy——都提供一个"最短缓存时间"参数，用途是减少上游查询、加快解析：
+
+```
+dnsmasq   : --min-cache-ttl=3600
+AdGuard   : cache_min_ttl
+部分设备  : cache-min-ttl / TTL override
+```
+
+出发点是好的，但它会**直接废掉 CDN 的秒级调度机制**：
+
+```
+   权威说：这组 IP 你只能记 1 秒
+   设备做：我记 3600 秒
+        │
+        ▼
+   这一小时内，无论 CDN 怎么调度、节点是否已下线，
+   全网用户拿到的都是同一组被冻住的 IP
+        │
+        ▼
+   ★ 一旦冻住的那组节点下线 → 全公司对该站点白屏，
+     直到缓存到期才"自己好了" ★
+```
+
+**症状特征（最快的识别点）**：
+
+- **主站能打开，但页面白屏或卡死**——因为 CSS / JS / 字体通常托管在**独立的 CDN 域名**上，主站域名正常不代表资源域名正常
+- 现象**时好时坏、找不到规律**，间歇周期恰好等于设备的缓存时长
+- 换用公共 DNS 立刻正常，切回内网 DNS 立刻复现
+
+**一招定性——比 TTL 量级**：
+
+```bash
+# 内网 DNS 与公共 DNS 问同一个域名，只看 TTL
+$ dig @<内网DNS>  cdn.example.com +noall +answer
+cdn.example.com.   16722   IN   A   ...      ← 上万秒
+$ dig @223.5.5.5   cdn.example.com +noall +answer
+cdn.example.com.      54   IN   A   ...      ← 权威只给 54 秒
+
+# 放大 310 倍 → 命中 min-TTL 覆盖
+```
+
+> 完整的真实案例（含 A/B 验证、TTL 倒数过程、自愈与复发）见
+> [排障方法论 · 真实故障案例集](../05-排障方法论/04-真实故障案例集.md) **案例 13**。
+
+**⚠️ 不要用 hosts 写死 CDN 的 IP**——CDN 节点本就轮换，写死等于把当前这组**永久**冻住。节点一下线，故障就从"间歇"变成"永久"，而且更难定位。
+
 **常见记录类型**：
 
 | 类型 | 作用 | 示例 |
@@ -478,6 +563,11 @@ R1# show ntp associations
 | DHCP 中继 | `ip helper-address 10.0.0.53` | `dhcp relay server-address 10.0.0.53` | `dhcp relay server-ip 10.0.0.53` |
 | DHCP Snooping | `ip dhcp snooping` | `dhcp snooping enable` | `dhcp snooping enable` |
 | 信任口 | `ip dhcp snooping trust` | `dhcp snooping trust` | `dhcp snooping trusted` |
+| 启用域名解析 | `ip domain-lookup` | `dns resolve` | `dns resolve` |
+| 指定 DNS 服务器 | `ip name-server 10.0.0.53` | `dns server 10.0.0.53` | `dns server 10.0.0.53` |
+| DNS 代理 / 缓存 | `ip dns server` | `dns proxy enable` | `dns proxy enable` |
+| **查看解析缓存** | `show hosts` | `display dns host` | `display dns dynamic-host` |
+| **清除解析缓存** | `clear host *` | `reset dns host` | `reset dns dynamic-host` |
 | NTP 客户端 | `ntp server 10.0.0.61` | `ntp-service unicast-server 10.0.0.61` | `ntp-service unicast-server 10.0.0.61` |
 | NTP 服务端 | `ntp master 3` | `ntp-service refclock-master 3` | `ntp-service refclock-master 3` |
 | 时区 | `clock timezone CST 8` | `clock timezone CST add 8` | `clock timezone CST add 08:00:00` |
@@ -704,6 +794,8 @@ R2# show ntp associations
 | ping IP 通、ping 域名不通 | DNS 配置 | `nslookup`、`dig` |
 | 部分域名解析失败 | **TCP 53 被拦** | `dig +tcp <域名>` |
 | 所有访问慢 5 秒 | **AAAA 查询超时** | `dig AAAA <域名>` |
+| **主站能开、页面白屏** | **min-TTL 覆盖冻住了 CDN 节点** | 内网 / 公共 DNS **比 TTL 量级** |
+| **时好时坏、找不到规律** | 缓存周期 = 间歇周期 | 连查同一记录看 **TTL 是否在倒数** |
 | 内网域名解析不了 | 搜索域 / 内网 DNS | `show hosts`、检查 domain-name |
 | 设备敲错命令卡 30 秒 | `ip domain-lookup` 开着 | `no ip domain-lookup` |
 
@@ -736,6 +828,9 @@ R2# show ntp associations
 - **`169.254.x.x` = DHCP 失败**。
 - **DHCP Snooping 的 trust/untrust 概念**，以及它与 DAI、IPSG 的关系。
 - **DNS 需要 TCP+UDP 53 都放行**。
+- **`TTL` 有两个含义**：IP 头 TTL 是**跳数**，DNS TTL 是**秒**。别混。
+- **DNS TTL 的权衡**：长 = 查询少但改地址生效慢；短 = 调度灵活，CDN 必须用短 TTL。
+- **min-TTL 覆盖会废掉 CDN 调度**，典型症状是"主站正常但页面白屏、时好时坏"。
 - **NTP Stratum 层级、`reach 377` 的含义**。
 - **NTP 偏差 > 1000 秒会拒绝同步**。
 
@@ -1009,6 +1104,59 @@ time nslookup -type=AAAA www.example.com
 | IPv6 路由存在但不通（Happy Eyeballs 失效） | `ping6` 测试 |
 
 > **实战经验**：这类"固定延迟"问题的排查关键是**注意延迟的规律性**。随机延迟通常是网络拥塞或丢包；**固定的 5 秒、10 秒、30 秒延迟几乎总是某个超时定时器**——顺着"哪个协议的默认超时是这个数"去查，往往一击即中。
+</details>
+
+**6.** 面试官问："`TTL` 是什么？"你会怎么答？另外：某网站主站能打开但页面一直白屏，换成 `223.5.5.5` 就正常，切回公司 DNS 又坏，过几小时它自己好了。根因最可能是什么？
+
+<details><summary>答案</summary>
+
+**第一问——先反问"哪个 TTL"，这就是考点。**
+
+| | **IP 头 TTL** | **DNS TTL** |
+|:--|:--|:--|
+| 单位 | **跳数** | **秒** |
+| 谁减它 | 每台路由器减 1（三层交换机做路由时也减） | 不递减，是缓存有效期 |
+| 归零 | 丢包 + 回 ICMP Time Exceeded | 缓存失效，重新查询 |
+| 用途 | 防环、`traceroute` | 控制解析结果能缓存多久 |
+
+一句话答法："TTL 在 IP 头里是**跳数限制**，用来防环，也是 traceroute 的原理；在 DNS 里是**缓存秒数**，决定解析结果能被缓存多久。两者只是重名。"
+
+**第二问——根因：内网 DNS 开了 min-TTL 覆盖，冻住了一组已失效的 CDN 节点。**
+
+推导链：
+
+```
+   ① 主站能开、页面白屏
+      → 主站域名正常，挂的是承载 CSS/JS/字体的独立 CDN 域名
+      → 这是"资源域"故障，不是"带宽慢"
+
+   ② 换公共 DNS 就好、切回就坏
+      → 唯一变量是"谁给的地址"
+      → 排除防火墙、链路、带宽、网站本身
+
+   ③ 过几小时自己好
+      → 缓存到期后重新查询，抽到了可用节点
+      → ★ 不是修好了，是进入下一轮抽签 ★
+```
+
+**定性只需一条命令——比 TTL 量级**：
+
+```bash
+$ dig @<内网DNS> cdn.example.com +noall +answer
+cdn.example.com.   16722   IN   A   ...     ← 上万秒
+$ dig @223.5.5.5  cdn.example.com +noall +answer
+cdn.example.com.      54   IN   A   ...     ← 权威只给 54 秒
+```
+
+权威给几十秒、内网给上万秒 = **命中 min-TTL 覆盖**。
+
+**两个容易答错的点**：
+
+1. **别答"DNS 污染/劫持"**。污染是返回**错误**的地址，这里返回的是**曾经正确、现在已下线**的地址——性质不同，且换公共 DNS 能好、过期能自愈，都不符合污染特征。
+
+2. **别建议用 hosts 写死 IP**。CDN 节点本就轮换，写死等于把当前这组**永久**冻住，会把间歇故障变成永久故障。正确做法是**关掉设备上的 min-TTL 覆盖**。
+
+> 完整案例见 [排障方法论 · 真实故障案例集](../05-排障方法论/04-真实故障案例集.md) **案例 13**。
 </details>
 
 ---
